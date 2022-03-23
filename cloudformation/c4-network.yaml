@@ -1,0 +1,559 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation CGAP network template, for use in an ECS-based CGAP
+  environment.
+Outputs:
+  ApplicationSecurityGroup:
+    Export:
+      Name: !Sub '${AWS::StackName}-ApplicationSecurityGroup'
+    Value: !Ref 'ApplicationSecurityGroup'
+  DBSecurityGroup:
+    Export:
+      Name: !Sub '${AWS::StackName}-DBSecurityGroup'
+    Value: !Ref 'DBSecurityGroup'
+  HTTPSSecurityGroup:
+    Export:
+      Name: !Sub '${AWS::StackName}-HTTPSSecurityGroup'
+    Value: !Ref 'HTTPSSecurityGroup'
+  PrivateSubnetA:
+    Export:
+      Name: !Sub '${AWS::StackName}-PrivateSubnetA'
+    Value: !Ref 'PrivateSubnetA'
+  PrivateSubnetB:
+    Export:
+      Name: !Sub '${AWS::StackName}-PrivateSubnetB'
+    Value: !Ref 'PrivateSubnetB'
+  PublicSubnetA:
+    Export:
+      Name: !Sub '${AWS::StackName}-PublicSubnetA'
+    Value: !Ref 'PublicSubnetA'
+  PublicSubnetB:
+    Export:
+      Name: !Sub '${AWS::StackName}-PublicSubnetB'
+    Value: !Ref 'PublicSubnetB'
+  VPC:
+    Export:
+      Name: !Sub '${AWS::StackName}-VPC'
+    Value: !Ref 'VPC'
+Resources:
+  ApplicationHTTPSInboundAccess:
+    Properties:
+      CidrIp: '0.0.0.0/0'
+      Description: allows inbound traffic on tcp port 443
+      FromPort: 443
+      GroupId: !Ref 'ApplicationSecurityGroup'
+      IpProtocol: tcp
+      ToPort: 443
+    Type: AWS::EC2::SecurityGroupIngress
+  ApplicationHTTPSOutboundAllAccess:
+    Properties:
+      CidrIp: '0.0.0.0/0'
+      Description: allows outbound traffic on tcp port 443
+      FromPort: 443
+      GroupId: !Ref 'ApplicationSecurityGroup'
+      IpProtocol: tcp
+      ToPort: 443
+    Type: AWS::EC2::SecurityGroupEgress
+  ApplicationNTPInboundAllAccess:
+    Properties:
+      CidrIp: '0.0.0.0/0'
+      Description: allows inbound traffic on udp port 123
+      FromPort: 123
+      GroupId: !Ref 'ApplicationSecurityGroup'
+      IpProtocol: udp
+      ToPort: 123
+    Type: AWS::EC2::SecurityGroupIngress
+  ApplicationNTPOutboundAllAccess:
+    Properties:
+      CidrIp: '0.0.0.0/0'
+      Description: allows outbound traffic on udp port 123
+      FromPort: 123
+      GroupId: !Ref 'ApplicationSecurityGroup'
+      IpProtocol: udp
+      ToPort: 123
+    Type: AWS::EC2::SecurityGroupEgress
+  ApplicationSSHInboundAllAccess:
+    Properties:
+      CidrIp: '0.0.0.0/0'
+      Description: allows inbound traffic on tcp port 22
+      FromPort: 22
+      GroupId: !Ref 'ApplicationSecurityGroup'
+      IpProtocol: tcp
+      ToPort: 22
+    Type: AWS::EC2::SecurityGroupIngress
+  ApplicationSSHOutboundAllAccess:
+    Properties:
+      CidrIp: '0.0.0.0/0'
+      Description: allows outbound traffic on tcp port 22
+      FromPort: 22
+      GroupId: !Ref 'ApplicationSecurityGroup'
+      IpProtocol: tcp
+      ToPort: 22
+    Type: AWS::EC2::SecurityGroupEgress
+  ApplicationSecurityGroup:
+    Properties:
+      GroupDescription: allows access needed by Application
+      GroupName: ApplicationSecurityGroup
+      Tags:
+        - Key: Name
+          Value: ApplicationSecurityGroup
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::SecurityGroup
+  ApplicationWebInboundAccess:
+    Properties:
+      CidrIp: '0.0.0.0/0'
+      Description: allows inbound traffic on tcp port 80
+      FromPort: 80
+      GroupId: !Ref 'ApplicationSecurityGroup'
+      IpProtocol: tcp
+      ToPort: 80
+    Type: AWS::EC2::SecurityGroupIngress
+  ApplicationWebOutboundAllAccess:
+    Properties:
+      CidrIp: '0.0.0.0/0'
+      Description: allows outbound traffic on tcp port 80
+      FromPort: 80
+      GroupId: !Ref 'ApplicationSecurityGroup'
+      IpProtocol: tcp
+      ToPort: 80
+    Type: AWS::EC2::SecurityGroupEgress
+  AttachGateway:
+    Properties:
+      InternetGatewayId: !Ref 'InternetGateway'
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::VPCGatewayAttachment
+  NATGatewayForC4NetworkMainPublicSubnetARoute:
+    Properties:
+      DestinationCidrBlock: '0.0.0.0/0'
+      NatGatewayId: !Ref 'NATGatewayForC4NetworkMainPublicSubnetA'
+      RouteTableId: !Ref 'PrivateRouteTable'
+    Type: AWS::EC2::Route
+  PrivateSubnetAToC4NetworkMainPrivateRouteTableAssociation:
+    Properties:
+      RouteTableId: !Ref 'PrivateRouteTable'
+      SubnetId: !Ref 'PrivateSubnetA'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  PrivateSubnetBToC4NetworkMainPrivateRouteTableAssociation:
+    Properties:
+      RouteTableId: !Ref 'PrivateRouteTable'
+      SubnetId: !Ref 'PrivateSubnetB'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  PublicSubnetAToC4NetworkMainPublicRouteTableAssociation:
+    Properties:
+      RouteTableId: !Ref 'PublicRouteTable'
+      SubnetId: !Ref 'PublicSubnetA'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  PublicSubnetBToC4NetworkMainPublicRouteTableAssociation:
+    Properties:
+      RouteTableId: !Ref 'PublicRouteTable'
+      SubnetId: !Ref 'PublicSubnetB'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  DBOutboundAllAccess:
+    Properties:
+      CidrIp: '0.0.0.0/0'
+      Description: allows outbound traffic to tcp 54xx
+      FromPort: 5400
+      GroupId: !Ref 'DBSecurityGroup'
+      IpProtocol: tcp
+      ToPort: 5499
+    Type: AWS::EC2::SecurityGroupEgress
+  DBPortRangeAccess:
+    Properties:
+      CidrIp: '0.0.0.0/0'
+      Description: allows database access on tcp ports 54xx
+      FromPort: 5400
+      GroupId: !Ref 'DBSecurityGroup'
+      IpProtocol: tcp
+      ToPort: 5499
+    Type: AWS::EC2::SecurityGroupIngress
+  DBSecurityGroup:
+    Properties:
+      GroupDescription: allows database access on a port range
+      GroupName: DBSecurityGroup
+      Tags:
+        - Key: Name
+          Value: DBSecurityGroup
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::SecurityGroup
+  SentieonLicenseSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: EC2 Security Group for instances launched in the VPC
+      GroupName: !Ref AWS::StackName
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8990
+          ToPort: 8990
+          CidrIp: 10.0.0.0/16
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: icmp
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: icmpv6
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 52.89.132.242/32
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      VpcId: !Ref VPC
+  EIPforC4NetworkMainPublicSubnetA:
+    Properties:
+      Domain: vpc
+    Type: AWS::EC2::EIP
+  EIPforC4NetworkMainPublicSubnetB:
+    Properties:
+      Domain: vpc
+    Type: AWS::EC2::EIP
+  HTTPSInboundAccess:
+    Properties:
+      CidrIp: '0.0.0.0/0'
+      Description: allows inbound traffic on tcp port 443
+      FromPort: 443
+      GroupId: !Ref 'HTTPSSecurityGroup'
+      IpProtocol: tcp
+      ToPort: 443
+    Type: AWS::EC2::SecurityGroupIngress
+  HTTPSOutboundAllAccess:
+    Properties:
+      CidrIp: '0.0.0.0/0'
+      Description: allows outbound traffic on tcp port 443
+      FromPort: 443
+      GroupId: !Ref 'HTTPSSecurityGroup'
+      IpProtocol: tcp
+      ToPort: 443
+    Type: AWS::EC2::SecurityGroupEgress
+  HTTPSSecurityGroup:
+    Properties:
+      GroupDescription: allows https-only web access on port 443
+      GroupName: HTTPSSecurityGroup
+      Tags:
+        - Key: Name
+          Value: HTTPSSecurityGroup
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::SecurityGroup
+  InternetGateway:
+    Properties:
+      Tags:
+        - Key: Name
+          Value: InternetGateway
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+    Type: AWS::EC2::InternetGateway
+  InternetGatewayRoute:
+    Properties:
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId: !Ref 'InternetGateway'
+      RouteTableId: !Ref 'PublicRouteTable'
+    Type: AWS::EC2::Route
+  NATGatewayForC4NetworkMainPublicSubnetA:
+    DependsOn: EIPforC4NetworkMainPublicSubnetA
+    Properties:
+      AllocationId: !GetAtt 'EIPforC4NetworkMainPublicSubnetA.AllocationId'
+      SubnetId: !Ref 'PublicSubnetA'
+      Tags:
+        - Key: Name
+          Value: NATGatewayForC4NetworkMainPublicSubnetA
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+    Type: AWS::EC2::NatGateway
+  NATGatewayForC4NetworkMainPublicSubnetB:
+    DependsOn: EIPforC4NetworkMainPublicSubnetB
+    Properties:
+      AllocationId: !GetAtt 'EIPforC4NetworkMainPublicSubnetB.AllocationId'
+      SubnetId: !Ref 'PublicSubnetB'
+      Tags:
+        - Key: Name
+          Value: NATGatewayForC4NetworkMainPublicSubnetB
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+    Type: AWS::EC2::NatGateway
+  PrivateRouteTable:
+    Properties:
+      Tags:
+        - Key: Name
+          Value: PrivateRouteTable
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::RouteTable
+  PrivateSubnetA:
+    Properties:
+      AvailabilityZone: us-east-1a
+      CidrBlock: 10.0.0.0/18
+      Tags:
+        - Key: Name
+          Value: PrivateSubnetA
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::Subnet
+  PrivateSubnetB:
+    Properties:
+      AvailabilityZone: us-east-1b
+      CidrBlock: 10.0.128.0/18
+      Tags:
+        - Key: Name
+          Value: PrivateSubnetB
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::Subnet
+  PublicRouteTable:
+    Properties:
+      Tags:
+        - Key: Name
+          Value: PublicRouteTable
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::RouteTable
+  PublicSubnetA:
+    Properties:
+      AvailabilityZone: us-east-1a
+      CidrBlock: 10.0.64.0/18
+      Tags:
+        - Key: Name
+          Value: PublicSubnetA
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::Subnet
+  PublicSubnetB:
+    Properties:
+      AvailabilityZone: us-east-1b
+      CidrBlock: 10.0.192.0/18
+      Tags:
+        - Key: Name
+          Value: PublicSubnetB
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::Subnet
+  MainRouteTable:
+    Properties:
+      Tags:
+        - Key: Name
+          Value: MainRouteTable
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::RouteTable
+  VPC:
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: 'true'
+      EnableDnsSupport: 'true'
+      Tags:
+        - Key: Name
+          Value: !Sub '${AWS::StackName}-VPC'
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+    Type: AWS::EC2::VPC
+  dynamodbVPCGEndpoint:
+    Properties:
+      RouteTableIds:
+        - !Ref 'PrivateRouteTable'
+      ServiceName: com.amazonaws.us-east-1.dynamodb
+      VpcEndpointType: Gateway
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::VPCEndpoint
+  ebsVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - !Ref 'ApplicationSecurityGroup'
+      ServiceName: com.amazonaws.us-east-1.ebs
+      SubnetIds:
+        - !Ref 'PrivateSubnetA'
+        - !Ref 'PrivateSubnetB'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::VPCEndpoint
+  ec2VPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - !Ref 'ApplicationSecurityGroup'
+      ServiceName: com.amazonaws.us-east-1.ec2
+      SubnetIds:
+        - !Ref 'PrivateSubnetA'
+        - !Ref 'PrivateSubnetB'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::VPCEndpoint
+  ecrapiVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - !Ref 'ApplicationSecurityGroup'
+      ServiceName: com.amazonaws.us-east-1.ecr.api
+      SubnetIds:
+        - !Ref 'PrivateSubnetA'
+        - !Ref 'PrivateSubnetB'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::VPCEndpoint
+  ecrdkrVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - !Ref 'ApplicationSecurityGroup'
+      ServiceName: com.amazonaws.us-east-1.ecr.dkr
+      SubnetIds:
+        - !Ref 'PrivateSubnetA'
+        - !Ref 'PrivateSubnetB'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::VPCEndpoint
+  lambdaVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - !Ref 'ApplicationSecurityGroup'
+      ServiceName: com.amazonaws.us-east-1.lambda
+      SubnetIds:
+        - !Ref 'PrivateSubnetA'
+        - !Ref 'PrivateSubnetB'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::VPCEndpoint
+  logsVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - !Ref 'ApplicationSecurityGroup'
+      ServiceName: com.amazonaws.us-east-1.logs
+      SubnetIds:
+        - !Ref 'PrivateSubnetA'
+        - !Ref 'PrivateSubnetB'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::VPCEndpoint
+  s3VPCGEndpoint:
+    Properties:
+      RouteTableIds:
+        - !Ref 'PrivateRouteTable'
+      ServiceName: com.amazonaws.us-east-1.s3
+      VpcEndpointType: Gateway
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::VPCEndpoint
+  secretsmanagerVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - !Ref 'ApplicationSecurityGroup'
+      ServiceName: com.amazonaws.us-east-1.secretsmanager
+      SubnetIds:
+        - !Ref 'PrivateSubnetA'
+        - !Ref 'PrivateSubnetB'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::VPCEndpoint
+  sqsVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - !Ref 'ApplicationSecurityGroup'
+      ServiceName: com.amazonaws.us-east-1.sqs
+      SubnetIds:
+        - !Ref 'PrivateSubnetA'
+        - !Ref 'PrivateSubnetB'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::VPCEndpoint
+  ssmVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - !Ref 'ApplicationSecurityGroup'
+      ServiceName: com.amazonaws.us-east-1.ssm
+      SubnetIds:
+        - !Ref 'PrivateSubnetA'
+        - !Ref 'PrivateSubnetB'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::VPCEndpoint
+  statesVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - !Ref 'ApplicationSecurityGroup'
+      ServiceName: com.amazonaws.us-east-1.states
+      SubnetIds:
+        - !Ref 'PrivateSubnetA'
+        - !Ref 'PrivateSubnetB'
+      VpcEndpointType: Interface
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::VPCEndpoint
