@@ -66,12 +66,7 @@ Resources:
     Properties:
       RouteTableId: !Ref RouteTable
       SubnetId: !Ref Subnet
-  PrivateSubnetA:
-      Type: 'AWS::EC2::Subnet'
-      Properties:
-        CidrBlock: 10.1.16.0/20
-        VpcId: !Ref VPC
-  PrivateSubnetB:
+
       Type: 'AWS::EC2::Subnet'
       Properties:
         CidrBlock: 10.1.128.0/20

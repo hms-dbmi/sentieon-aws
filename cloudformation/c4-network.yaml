@@ -133,15 +133,35 @@ Resources:
       NatGatewayId: !Ref 'NATGatewayForC4NetworkMainPublicSubnetA'
       RouteTableId: !Ref 'PrivateRouteTable'
     Type: AWS::EC2::Route
-  PrivateSubnetAToC4NetworkMainPrivateRouteTableAssociation:
+  PrivateSubnetARouteTableAssociation:
     Properties:
       RouteTableId: !Ref 'PrivateRouteTable'
       SubnetId: !Ref 'PrivateSubnetA'
     Type: AWS::EC2::SubnetRouteTableAssociation
-  PrivateSubnetBToC4NetworkMainPrivateRouteTableAssociation:
+  PrivateSubnetBRouteTableAssociation:
     Properties:
       RouteTableId: !Ref 'PrivateRouteTable'
       SubnetId: !Ref 'PrivateSubnetB'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  PrivateSubnetCRouteTableAssociation:
+    Properties:
+      RouteTableId: !Ref 'PrivateRouteTable'
+      SubnetId: !Ref 'PrivateSubnetC'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  PrivateSubnetDRouteTableAssociation:
+    Properties:
+      RouteTableId: !Ref 'PrivateRouteTable'
+      SubnetId: !Ref 'PrivateSubnetD'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  PrivateSubnetERouteTableAssociation:
+    Properties:
+      RouteTableId: !Ref 'PrivateRouteTable'
+      SubnetId: !Ref 'PrivateSubnetE'
+    Type: AWS::EC2::SubnetRouteTableAssociation
+  PrivateSubnetFRouteTableAssociation:
+    Properties:
+      RouteTableId: !Ref 'PrivateRouteTable'
+      SubnetId: !Ref 'PrivateSubnetF'
     Type: AWS::EC2::SubnetRouteTableAssociation
   PublicSubnetAToC4NetworkMainPublicRouteTableAssociation:
     Properties:
@@ -195,7 +215,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 8990
           ToPort: 8990
-          CidrIp: 10.0.0.0/16
+          CidrIp: 10.1.0.0/16
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
@@ -323,7 +343,7 @@ Resources:
   PrivateSubnetA:
     Properties:
       AvailabilityZone: us-east-1a
-      CidrBlock: 10.0.0.0/18
+      CidrBlock: 10.1.0.0/20
       Tags:
         - Key: Name
           Value: PrivateSubnetA
@@ -338,10 +358,70 @@ Resources:
   PrivateSubnetB:
     Properties:
       AvailabilityZone: us-east-1b
-      CidrBlock: 10.0.128.0/18
+      CidrBlock: 10.1.16.0/20
       Tags:
         - Key: Name
           Value: PrivateSubnetB
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::Subnet
+  PrivateSubnetC:
+    Properties:
+      AvailabilityZone: us-east-1c
+      CidrBlock: 10.1.32.0/20
+      Tags:
+        - Key: Name
+          Value: PrivateSubnetC
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::Subnet
+  PrivateSubnetD:
+    Properties:
+      AvailabilityZone: us-east-1d
+      CidrBlock: 10.1.48.0/20
+      Tags:
+        - Key: Name
+          Value: PrivateSubnetD
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::Subnet
+  PrivateSubnetE:
+    Properties:
+      AvailabilityZone: us-east-1e
+      CidrBlock: 10.1.128.0/20
+      Tags:
+        - Key: Name
+          Value: PrivateSubnetE
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: cgap
+        - Key: owner
+          Value: project
+      VpcId: !Ref 'VPC'
+    Type: AWS::EC2::Subnet
+  PrivateSubnetF:
+    Properties:
+      AvailabilityZone: us-east-1f
+      CidrBlock: 10.1.144.0/20
+      Tags:
+        - Key: Name
+          Value: PrivateSubnetF
         - Key: env
           Value: prod
         - Key: project
@@ -366,7 +446,7 @@ Resources:
   PublicSubnetA:
     Properties:
       AvailabilityZone: us-east-1a
-      CidrBlock: 10.0.64.0/18
+      CidrBlock: 10.1.64.0/18
       Tags:
         - Key: Name
           Value: PublicSubnetA
@@ -381,7 +461,7 @@ Resources:
   PublicSubnetB:
     Properties:
       AvailabilityZone: us-east-1b
-      CidrBlock: 10.0.192.0/18
+      CidrBlock: 10.1.192.0/18
       Tags:
         - Key: Name
           Value: PublicSubnetB
@@ -408,7 +488,7 @@ Resources:
     Type: AWS::EC2::RouteTable
   VPC:
     Properties:
-      CidrBlock: 10.0.0.0/16
+      CidrBlock: 10.1.0.0/16
       EnableDnsHostnames: 'true'
       EnableDnsSupport: 'true'
       Tags:
@@ -438,6 +518,10 @@ Resources:
       SubnetIds:
         - !Ref 'PrivateSubnetA'
         - !Ref 'PrivateSubnetB'
+        - !Ref 'PrivateSubnetC'
+        - !Ref 'PrivateSubnetD'
+        - !Ref 'PrivateSubnetE'
+        - !Ref 'PrivateSubnetF'
       VpcEndpointType: Interface
       VpcId: !Ref 'VPC'
     Type: AWS::EC2::VPCEndpoint
@@ -450,6 +534,10 @@ Resources:
       SubnetIds:
         - !Ref 'PrivateSubnetA'
         - !Ref 'PrivateSubnetB'
+        - !Ref 'PrivateSubnetC'
+        - !Ref 'PrivateSubnetD'
+        - !Ref 'PrivateSubnetE'
+        - !Ref 'PrivateSubnetF'
       VpcEndpointType: Interface
       VpcId: !Ref 'VPC'
     Type: AWS::EC2::VPCEndpoint
@@ -462,6 +550,10 @@ Resources:
       SubnetIds:
         - !Ref 'PrivateSubnetA'
         - !Ref 'PrivateSubnetB'
+        - !Ref 'PrivateSubnetC'
+        - !Ref 'PrivateSubnetD'
+        - !Ref 'PrivateSubnetE'
+        - !Ref 'PrivateSubnetF'
       VpcEndpointType: Interface
       VpcId: !Ref 'VPC'
     Type: AWS::EC2::VPCEndpoint
@@ -474,6 +566,10 @@ Resources:
       SubnetIds:
         - !Ref 'PrivateSubnetA'
         - !Ref 'PrivateSubnetB'
+        - !Ref 'PrivateSubnetC'
+        - !Ref 'PrivateSubnetD'
+        - !Ref 'PrivateSubnetE'
+        - !Ref 'PrivateSubnetF'
       VpcEndpointType: Interface
       VpcId: !Ref 'VPC'
     Type: AWS::EC2::VPCEndpoint
@@ -486,6 +582,10 @@ Resources:
       SubnetIds:
         - !Ref 'PrivateSubnetA'
         - !Ref 'PrivateSubnetB'
+        - !Ref 'PrivateSubnetC'
+        - !Ref 'PrivateSubnetD'
+        - !Ref 'PrivateSubnetE'
+        - !Ref 'PrivateSubnetF'
       VpcEndpointType: Interface
       VpcId: !Ref 'VPC'
     Type: AWS::EC2::VPCEndpoint
@@ -498,6 +598,10 @@ Resources:
       SubnetIds:
         - !Ref 'PrivateSubnetA'
         - !Ref 'PrivateSubnetB'
+        - !Ref 'PrivateSubnetC'
+        - !Ref 'PrivateSubnetD'
+        - !Ref 'PrivateSubnetE'
+        - !Ref 'PrivateSubnetF'
       VpcEndpointType: Interface
       VpcId: !Ref 'VPC'
     Type: AWS::EC2::VPCEndpoint
@@ -518,6 +622,10 @@ Resources:
       SubnetIds:
         - !Ref 'PrivateSubnetA'
         - !Ref 'PrivateSubnetB'
+        - !Ref 'PrivateSubnetC'
+        - !Ref 'PrivateSubnetD'
+        - !Ref 'PrivateSubnetE'
+        - !Ref 'PrivateSubnetF'
       VpcEndpointType: Interface
       VpcId: !Ref 'VPC'
     Type: AWS::EC2::VPCEndpoint
@@ -530,6 +638,10 @@ Resources:
       SubnetIds:
         - !Ref 'PrivateSubnetA'
         - !Ref 'PrivateSubnetB'
+        - !Ref 'PrivateSubnetC'
+        - !Ref 'PrivateSubnetD'
+        - !Ref 'PrivateSubnetE'
+        - !Ref 'PrivateSubnetF'
       VpcEndpointType: Interface
       VpcId: !Ref 'VPC'
     Type: AWS::EC2::VPCEndpoint
@@ -542,6 +654,10 @@ Resources:
       SubnetIds:
         - !Ref 'PrivateSubnetA'
         - !Ref 'PrivateSubnetB'
+        - !Ref 'PrivateSubnetC'
+        - !Ref 'PrivateSubnetD'
+        - !Ref 'PrivateSubnetE'
+        - !Ref 'PrivateSubnetF'
       VpcEndpointType: Interface
       VpcId: !Ref 'VPC'
     Type: AWS::EC2::VPCEndpoint
@@ -554,6 +670,10 @@ Resources:
       SubnetIds:
         - !Ref 'PrivateSubnetA'
         - !Ref 'PrivateSubnetB'
+        - !Ref 'PrivateSubnetC'
+        - !Ref 'PrivateSubnetD'
+        - !Ref 'PrivateSubnetE'
+        - !Ref 'PrivateSubnetF'
       VpcEndpointType: Interface
       VpcId: !Ref 'VPC'
     Type: AWS::EC2::VPCEndpoint

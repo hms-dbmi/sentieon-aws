@@ -1,0 +1,180 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation CGAP network template, for use in an ECS-based CGAP
+  environment.
+Resources:
+  dynamodbVPCEndpoint:
+    Properties:
+      RouteTableIds:
+        - rtb-03741eef67e630fab
+      ServiceName: com.amazonaws.us-east-1.dynamodb
+      VpcEndpointType: Gateway
+      VpcId: vpc-085cc9d8f9dc31cc2
+    Type: AWS::EC2::VPCEndpoint
+  ebsVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - sg-0420cd98bbb211440
+      ServiceName: com.amazonaws.us-east-1.ebs
+      SubnetIds:
+        - subnet-0f49e1f6b95994c65
+        - subnet-00fb492a39be9894a
+        - subnet-02ac7abef2cb396ef
+        - subnet-025b2da2b74884467
+        - subnet-0301f65ee0d265d19
+        - subnet-09ad78803fc5ca83e
+      VpcEndpointType: Interface
+      VpcId: vpc-085cc9d8f9dc31cc2
+    Type: AWS::EC2::VPCEndpoint
+  ec2VPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - sg-0420cd98bbb211440
+      ServiceName: com.amazonaws.us-east-1.ec2
+      SubnetIds:
+        - subnet-0f49e1f6b95994c65
+        - subnet-00fb492a39be9894a
+        - subnet-02ac7abef2cb396ef
+        - subnet-025b2da2b74884467
+        - subnet-0301f65ee0d265d19
+        - subnet-09ad78803fc5ca83e
+      VpcEndpointType: Interface
+      VpcId: vpc-085cc9d8f9dc31cc2
+    Type: AWS::EC2::VPCEndpoint
+  ecrapiVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - sg-0420cd98bbb211440
+      ServiceName: com.amazonaws.us-east-1.ecr.api
+      SubnetIds:
+        - subnet-0f49e1f6b95994c65
+        - subnet-00fb492a39be9894a
+        - subnet-02ac7abef2cb396ef
+        - subnet-025b2da2b74884467
+        - subnet-0301f65ee0d265d19
+        - subnet-09ad78803fc5ca83e
+      VpcEndpointType: Interface
+      VpcId: vpc-085cc9d8f9dc31cc2
+    Type: AWS::EC2::VPCEndpoint
+  ecrdkrVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - sg-0420cd98bbb211440
+      ServiceName: com.amazonaws.us-east-1.ecr.dkr
+      SubnetIds:
+        - subnet-0f49e1f6b95994c65
+        - subnet-00fb492a39be9894a
+        - subnet-02ac7abef2cb396ef
+        - subnet-025b2da2b74884467
+        - subnet-0301f65ee0d265d19
+        - subnet-09ad78803fc5ca83e
+      VpcEndpointType: Interface
+      VpcId: vpc-085cc9d8f9dc31cc2
+    Type: AWS::EC2::VPCEndpoint
+  lambdaVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - sg-0420cd98bbb211440
+      ServiceName: com.amazonaws.us-east-1.lambda
+      SubnetIds:
+        - subnet-0f49e1f6b95994c65
+        - subnet-00fb492a39be9894a
+        - subnet-02ac7abef2cb396ef
+        - subnet-025b2da2b74884467
+        - subnet-0301f65ee0d265d19
+        - subnet-09ad78803fc5ca83e
+      VpcEndpointType: Interface
+      VpcId: vpc-085cc9d8f9dc31cc2
+    Type: AWS::EC2::VPCEndpoint
+  logsVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - sg-0420cd98bbb211440
+      ServiceName: com.amazonaws.us-east-1.logs
+      SubnetIds:
+        - subnet-0f49e1f6b95994c65
+        - subnet-00fb492a39be9894a
+        - subnet-02ac7abef2cb396ef
+        - subnet-025b2da2b74884467
+        - subnet-0301f65ee0d265d19
+        - subnet-09ad78803fc5ca83e
+      VpcEndpointType: Interface
+      VpcId: vpc-085cc9d8f9dc31cc2
+    Type: AWS::EC2::VPCEndpoint
+  s3VPCGEndpoint:
+    Properties:
+      RouteTableIds:
+        - rtb-03741eef67e630fab
+      ServiceName: com.amazonaws.us-east-1.s3
+      VpcEndpointType: Gateway
+      VpcId: vpc-085cc9d8f9dc31cc2
+    Type: AWS::EC2::VPCEndpoint
+  secretsmanagerVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - sg-0420cd98bbb211440
+      ServiceName: com.amazonaws.us-east-1.secretsmanager
+      SubnetIds:
+        - subnet-0f49e1f6b95994c65
+        - subnet-00fb492a39be9894a
+        - subnet-02ac7abef2cb396ef
+        - subnet-025b2da2b74884467
+        - subnet-0301f65ee0d265d19
+        - subnet-09ad78803fc5ca83e
+      VpcEndpointType: Interface
+      VpcId: vpc-085cc9d8f9dc31cc2
+    Type: AWS::EC2::VPCEndpoint
+  sqsVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - sg-0420cd98bbb211440
+      ServiceName: com.amazonaws.us-east-1.sqs
+      SubnetIds:
+        - subnet-0f49e1f6b95994c65
+        - subnet-00fb492a39be9894a
+        - subnet-02ac7abef2cb396ef
+        - subnet-025b2da2b74884467
+        - subnet-0301f65ee0d265d19
+        - subnet-09ad78803fc5ca83e
+      VpcEndpointType: Interface
+      VpcId: vpc-085cc9d8f9dc31cc2
+    Type: AWS::EC2::VPCEndpoint
+  ssmVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - sg-0420cd98bbb211440
+      ServiceName: com.amazonaws.us-east-1.ssm
+      SubnetIds:
+        - subnet-0f49e1f6b95994c65
+        - subnet-00fb492a39be9894a
+        - subnet-02ac7abef2cb396ef
+        - subnet-025b2da2b74884467
+        - subnet-0301f65ee0d265d19
+        - subnet-09ad78803fc5ca83e
+      VpcEndpointType: Interface
+      VpcId: vpc-085cc9d8f9dc31cc2
+    Type: AWS::EC2::VPCEndpoint
+  statesVPCIEndpoint:
+    Properties:
+      PrivateDnsEnabled: 'true'
+      SecurityGroupIds:
+        - sg-0420cd98bbb211440
+      ServiceName: com.amazonaws.us-east-1.states
+      SubnetIds:
+        - subnet-0f49e1f6b95994c65
+        - subnet-00fb492a39be9894a
+        - subnet-02ac7abef2cb396ef
+        - subnet-025b2da2b74884467
+        - subnet-0301f65ee0d265d19
+        - subnet-09ad78803fc5ca83e
+      VpcEndpointType: Interface
+      VpcId: vpc-085cc9d8f9dc31cc2
+    Type: AWS::EC2::VPCEndpoint
