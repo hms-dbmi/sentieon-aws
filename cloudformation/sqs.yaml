@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Queue to hold UDN joint calling jobs for processing"
+Parameters:
+    QueueName:
+        Description: "Name for the SQS"
+        Type: "String"
+Resources:
+    UDNJointQueue:
+        Type: AWS::SQS::Queue 
+        Properties: 
+            MessageRetentionPeriod: 1209600
+            QueueName: 
+                Ref: "QueueName"
+            VisibilityTimeout: 43200
+Outputs:
+    QueueURL:
+        Description: "URL of SQS"
+        Value:
+            Ref: UDNJointQueue
+    QueueARN:
+        Description: "ARN of SQS"
+        Value:
+            Fn::GetAtt:
+                - "UDNJointQueue"
+                - "Arn"
+    QueueName:
+        Description: "Name of new SQS"
+        Value:
+            Fn::GetAtt:
+                - "UDNJointQueue"
+                - "QueueName"

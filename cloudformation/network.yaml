@@ -127,10 +127,10 @@ Resources:
       InternetGatewayId: !Ref 'InternetGateway'
       VpcId: !Ref 'VPC'
     Type: AWS::EC2::VPCGatewayAttachment
-  NATGatewayForC4NetworkMainPublicSubnetARoute:
+  NATGatewayPublicSubnetARoute:
     Properties:
       DestinationCidrBlock: '0.0.0.0/0'
-      NatGatewayId: !Ref 'NATGatewayForC4NetworkMainPublicSubnetA'
+      NatGatewayId: !Ref 'NATGatewayPublicSubnetA'
       RouteTableId: !Ref 'PrivateRouteTable'
     Type: AWS::EC2::Route
   PrivateSubnetARouteTableAssociation:
@@ -163,12 +163,12 @@ Resources:
       RouteTableId: !Ref 'PrivateRouteTable'
       SubnetId: !Ref 'PrivateSubnetF'
     Type: AWS::EC2::SubnetRouteTableAssociation
-  PublicSubnetAToC4NetworkMainPublicRouteTableAssociation:
+  PublicSubnetAPublicRouteTableAssociation:
     Properties:
       RouteTableId: !Ref 'PublicRouteTable'
       SubnetId: !Ref 'PublicSubnetA'
     Type: AWS::EC2::SubnetRouteTableAssociation
-  PublicSubnetBToC4NetworkMainPublicRouteTableAssociation:
+  PublicSubnetBPublicRouteTableAssociation:
     Properties:
       RouteTableId: !Ref 'PublicRouteTable'
       SubnetId: !Ref 'PublicSubnetB'
@@ -238,11 +238,11 @@ Resources:
           ToPort: 22
           CidrIp: 0.0.0.0/0
       VpcId: !Ref VPC
-  EIPforC4NetworkMainPublicSubnetA:
+  EipPublicSubnetA:
     Properties:
       Domain: vpc
     Type: AWS::EC2::EIP
-  EIPforC4NetworkMainPublicSubnetB:
+  EipPublicSubnetB:
     Properties:
       Domain: vpc
     Type: AWS::EC2::EIP
@@ -297,14 +297,14 @@ Resources:
       GatewayId: !Ref 'InternetGateway'
       RouteTableId: !Ref 'PublicRouteTable'
     Type: AWS::EC2::Route
-  NATGatewayForC4NetworkMainPublicSubnetA:
-    DependsOn: EIPforC4NetworkMainPublicSubnetA
+  NATGatewayPublicSubnetA:
+    DependsOn: EipPublicSubnetA
     Properties:
-      AllocationId: !GetAtt 'EIPforC4NetworkMainPublicSubnetA.AllocationId'
+      AllocationId: !GetAtt 'EipPublicSubnetA.AllocationId'
       SubnetId: !Ref 'PublicSubnetA'
       Tags:
         - Key: Name
-          Value: NATGatewayForC4NetworkMainPublicSubnetA
+          Value: NATGatewayPublicSubnetA
         - Key: env
           Value: prod
         - Key: project
@@ -312,14 +312,14 @@ Resources:
         - Key: owner
           Value: project
     Type: AWS::EC2::NatGateway
-  NATGatewayForC4NetworkMainPublicSubnetB:
-    DependsOn: EIPforC4NetworkMainPublicSubnetB
+  NATGatewayPublicSubnetB:
+    DependsOn: EipPublicSubnetB
     Properties:
-      AllocationId: !GetAtt 'EIPforC4NetworkMainPublicSubnetB.AllocationId'
+      AllocationId: !GetAtt 'EipPublicSubnetB.AllocationId'
       SubnetId: !Ref 'PublicSubnetB'
       Tags:
         - Key: Name
-          Value: NATGatewayForC4NetworkMainPublicSubnetB
+          Value: NATGatewayPublicSubnetB
         - Key: env
           Value: prod
         - Key: project
