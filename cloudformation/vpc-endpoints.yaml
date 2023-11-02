@@ -1,6 +1,16 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: AWS CloudFormation CGAP network template, for use in an ECS-based CGAP
   environment.
+Parameters:
+  vpcId:
+    Description: ID of the VPC for endpoint deploy
+    Type: AWS::EC2::VPC::Id
+    Default: -
+  routeTable:
+    Description: 
+    Type: String
+    Default: -
+    
 Resources:
   dynamodbVPCEndpoint:
     Properties:

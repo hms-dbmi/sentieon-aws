@@ -447,6 +447,7 @@ Resources:
     Properties:
       AvailabilityZone: us-east-1a
       CidrBlock: 10.1.64.0/18
+      MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
           Value: PublicSubnetA
@@ -462,6 +463,7 @@ Resources:
     Properties:
       AvailabilityZone: us-east-1b
       CidrBlock: 10.1.192.0/18
+      MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
           Value: PublicSubnetB
