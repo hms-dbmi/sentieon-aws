@@ -5,3 +5,5 @@ Launch a VPC with security groups
 ```
 
 Here are [instructions for Sentieon license server](https://support.sentieon.com/appnotes/license_server/#cloud-examples) 
+
+https://support.sentieon.com/versions/202112.06/appnotes/aws_deployment/#deployment-of-the-sentieon-reg-license-server
