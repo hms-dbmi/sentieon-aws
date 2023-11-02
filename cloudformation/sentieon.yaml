@@ -1,0 +1,117 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation sentieon license server template.
+Outputs:
+  SentieonServerIP:
+    Description: private IP of Sentieon license Server.
+    Value: !GetAtt 'SentieonLicenseServer.PrivateIp'
+Parameters:
+  vpcId:
+    Description: VPC ID for EC2
+    Type: String
+  publicSubnet:
+    Description: public subnet for EC2
+    Type: String
+  ami:
+    Description: AMI for the EC2 host
+    Type: String
+    Default: 'ami-0df435f331839b2d6'
+Resources:
+  ApplicationHTTPSOutboundAllAccess:
+    Properties:
+      CidrIp: 0.0.0.0/0
+      Description: allows outbound traffic on tcp port 443
+      FromPort: 443
+      GroupId: !Ref SentieonSecurityGroup
+      IpProtocol: tcp
+      ToPort: 443
+    Type: AWS::EC2::SecurityGroupEgress
+  ApplicationICMPInboundAllAccess:
+    Properties:
+      CidrIp: 0.0.0.0/0
+      Description: allows ICMP
+      FromPort: -1
+      GroupId: !Ref SentieonSecurityGroup
+      IpProtocol: icmp
+      ToPort: -1
+    Type: AWS::EC2::SecurityGroupIngress
+  ApplicationICMPOutboundAllAccess:
+    Properties:
+      CidrIp: 0.0.0.0/0
+      Description: allows ICMP
+      FromPort: -1
+      GroupId: !Ref SentieonSecurityGroup
+      IpProtocol: icmp
+      ToPort: -1
+    Type: AWS::EC2::SecurityGroupEgress
+  ApplicationICMPv6InboundAllAccess:
+    Properties:
+      CidrIp: 0.0.0.0/0
+      Description: allows ICMP
+      FromPort: -1
+      GroupId: !Ref SentieonSecurityGroup
+      IpProtocol: icmpv6
+      ToPort: -1
+    Type: AWS::EC2::SecurityGroupIngress
+  ApplicationSSHInboundAllAccess:
+    Properties:
+      CidrIp: 0.0.0.0/0
+      Description: allows inbound traffic on tcp port 22
+      FromPort: 22
+      GroupId: !Ref SentieonSecurityGroup
+      IpProtocol: tcp
+      ToPort: 22
+    Type: AWS::EC2::SecurityGroupIngress
+  ApplicationSSHOutboundAllAccess:
+    Properties:
+      CidrIp: 0.0.0.0/0
+      Description: allows outbound traffic on tcp port 22
+      FromPort: 22
+      GroupId: !Ref SentieonSecurityGroup
+      IpProtocol: tcp
+      ToPort: 22
+    Type: AWS::EC2::SecurityGroupEgress
+  ApplicationSentieonServer:
+    Properties:
+      CidrIp: 10.1.0.0/16
+      Description: allows inbound traffic on tcp port 8990 (license server port)
+      FromPort: 8990
+      GroupId: !Ref SentieonSecurityGroup
+      IpProtocol: tcp
+      ToPort: 8990
+    Type: AWS::EC2::SecurityGroupIngress
+  SentieonLicenseServer:
+    Properties:
+      ImageId: !Ref ami
+      InstanceType: t2.nano
+      SecurityGroupIds:
+        - !Ref SentieonSecurityGroup
+      SubnetId: !Ref publicSubnet
+      Tags:
+        - Key: Name
+          Value: SentieonLicenseServer
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: udn-joint-calling
+        - Key: owner
+          Value: project
+    Type: AWS::EC2::Instance
+  SentieonSecurityGroup:
+    Properties:
+      GroupDescription: allows access needed by Sentieon License Server
+      GroupName: SentieonSecurityGroup
+      Tags:
+        - Key: Name
+          Value: SentieonSecurityGroup
+        - Key: env
+          Value: prod
+        - Key: project
+          Value: udn-joint-calling
+        - Key: owner
+          Value: project
+      VpcId: !Ref vpcId
+    Type: AWS::EC2::SecurityGroup 
+  SentieonEc2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      

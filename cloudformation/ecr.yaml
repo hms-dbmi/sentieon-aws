@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: creates ECR repos for CGAP pipeline step containers
+Resources:
+  upstreamSentieonECR:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: 'udn-upstream-sentieon'
+      Tags:
+        - Key: Name
+          Value: !Sub '${AWS::StackName}-upstream-sentieon-ECR'
+  upstreamGatkECR:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: 'udn-upstream-gatk'
+      Tags:
+        - Key: Name
+          Value: !Sub '${AWS::StackName}-upstream-gatk'
+  tibannaECR:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: 'udn-tibanna'
+      Tags:
+        - Key: Name
+          Value: !Sub '${AWS::StackName}-tibanna'
