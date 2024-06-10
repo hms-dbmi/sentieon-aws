@@ -71,6 +71,42 @@ Resources:
       IpProtocol: udp
       ToPort: 123
     Type: AWS::EC2::SecurityGroupEgress
+  ApplicationIcmpInboundAccess:
+    Properties:
+      CidrIp: 10.1.0.0/16
+      Description: allows inbound traffic on ICMP
+      FromPort: -1
+      GroupId: !Ref 'ApplicationSecurityGroup'
+      IpProtocol: icmp
+      ToPort: -1
+    Type: AWS::EC2::SecurityGroupIngress
+  ApplicationIcmpOutboundAccess:
+    Properties:
+      CidrIp: 10.1.0.0/16
+      Description: allows inbound traffic on ICMP
+      FromPort: -1
+      GroupId: !Ref 'ApplicationSecurityGroup'
+      IpProtocol: icmp
+      ToPort: -1
+    Type: AWS::EC2::SecurityGroupEgress
+  ApplicationSentieonInboundAccess:
+    Properties:
+      CidrIp: 10.1.0.0/16
+      Description: allows inbound traffic on ICMP
+      FromPort: 8990
+      GroupId: !Ref 'ApplicationSecurityGroup'
+      IpProtocol: tcp
+      ToPort: 8990
+    Type: AWS::EC2::SecurityGroupIngress
+  ApplicationSentieonOutboundAccess:
+    Properties:
+      CidrIp: 10.1.0.0/16
+      Description: allows outbound traffic on ICMP
+      FromPort: 8990
+      GroupId: !Ref 'ApplicationSecurityGroup'
+      IpProtocol: tcp
+      ToPort: 8990
+    Type: AWS::EC2::SecurityGroupEgress
   ApplicationSSHInboundAllAccess:
     Properties:
       CidrIp: '0.0.0.0/0'
