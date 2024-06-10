@@ -1,31 +1,33 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: "Queue to hold UDN joint calling jobs for processing"
-Parameters:
-    QueueName:
-        Description: "Name for the SQS"
-        Type: "String"
 Resources:
-    UDNJointQueue:
+    UdnSentieonBwaMemQueue:
         Type: AWS::SQS::Queue 
         Properties: 
             MessageRetentionPeriod: 1209600
-            QueueName: 
-                Ref: "QueueName"
+            QueueName: 'udn-sentieon-bwa-mem'
             VisibilityTimeout: 43200
-Outputs:
-    QueueURL:
-        Description: "URL of SQS"
-        Value:
-            Ref: UDNJointQueue
-    QueueARN:
-        Description: "ARN of SQS"
-        Value:
-            Fn::GetAtt:
-                - "UDNJointQueue"
-                - "Arn"
-    QueueName:
-        Description: "Name of new SQS"
-        Value:
-            Fn::GetAtt:
-                - "UDNJointQueue"
-                - "QueueName"
+    UdnAddReadGroupsQueue:
+        Type: AWS::SQS::Queue 
+        Properties: 
+            MessageRetentionPeriod: 1209600
+            QueueName: 'udn-add-read-groups'
+            VisibilityTimeout: 43200
+    UdnMergeBamsQueue:
+        Type: AWS::SQS::Queue 
+        Properties: 
+            MessageRetentionPeriod: 1209600
+            QueueName: 'udn-merge-bams'
+            VisibilityTimeout: 43200
+    UdnSentieonDedupQueue:
+        Type: AWS::SQS::Queue 
+        Properties: 
+            MessageRetentionPeriod: 1209600
+            QueueName: 'udn-sentieon-dedup'
+            VisibilityTimeout: 43200
+    UdnHaplotypeCallerQueue:
+        Type: AWS::SQS::Queue 
+        Properties: 
+            MessageRetentionPeriod: 1209600
+            QueueName: 'udn-haplotype-caller'
+            VisibilityTimeout: 43200
