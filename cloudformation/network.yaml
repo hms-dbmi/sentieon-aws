@@ -107,24 +107,6 @@ Resources:
       IpProtocol: tcp
       ToPort: 8990
     Type: AWS::EC2::SecurityGroupEgress
-  ApplicationSSHInboundAllAccess:
-    Properties:
-      CidrIp: '0.0.0.0/0'
-      Description: allows inbound traffic on tcp port 22
-      FromPort: 22
-      GroupId: !Ref 'ApplicationSecurityGroup'
-      IpProtocol: tcp
-      ToPort: 22
-    Type: AWS::EC2::SecurityGroupIngress
-  ApplicationSSHOutboundAllAccess:
-    Properties:
-      CidrIp: '0.0.0.0/0'
-      Description: allows outbound traffic on tcp port 22
-      FromPort: 22
-      GroupId: !Ref 'ApplicationSecurityGroup'
-      IpProtocol: tcp
-      ToPort: 22
-    Type: AWS::EC2::SecurityGroupEgress
   ApplicationSecurityGroup:
     Properties:
       GroupDescription: allows access needed by Application
