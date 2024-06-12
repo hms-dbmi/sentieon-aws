@@ -234,10 +234,6 @@ Resources:
           FromPort: 8990
           ToPort: 8990
           CidrIp: 10.1.0.0/16
-        - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          CidrIp: 0.0.0.0/0
         - IpProtocol: icmp
           FromPort: -1
           ToPort: -1
@@ -251,10 +247,6 @@ Resources:
           FromPort: 443
           ToPort: 443
           CidrIp: 52.89.132.242/32
-        - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          CidrIp: 0.0.0.0/0
       VpcId: !Ref VPC
   EipPublicSubnetA:
     Properties:
