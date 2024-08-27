@@ -247,6 +247,9 @@ Resources:
           FromPort: 443
           ToPort: 443
           CidrIp: 52.89.132.242/32
+      Tags:
+        - Key: Name
+          Value: SentieonLicenseSecurityGroup
       VpcId: !Ref VPC
   EipPublicSubnetA:
     Properties:
