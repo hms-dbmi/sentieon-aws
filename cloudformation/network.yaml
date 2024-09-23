@@ -6,10 +6,6 @@ Outputs:
     Export:
       Name: !Sub '${AWS::StackName}-ApplicationSecurityGroup'
     Value: !Ref 'ApplicationSecurityGroup'
-  DBSecurityGroup:
-    Export:
-      Name: !Sub '${AWS::StackName}-DBSecurityGroup'
-    Value: !Ref 'DBSecurityGroup'
   HTTPSSecurityGroup:
     Export:
       Name: !Sub '${AWS::StackName}-HTTPSSecurityGroup'
@@ -191,39 +187,6 @@ Resources:
       RouteTableId: !Ref 'PublicRouteTable'
       SubnetId: !Ref 'PublicSubnetB'
     Type: AWS::EC2::SubnetRouteTableAssociation
-  DBOutboundAllAccess:
-    Properties:
-      CidrIp: '0.0.0.0/0'
-      Description: allows outbound traffic to tcp 54xx
-      FromPort: 5400
-      GroupId: !Ref 'DBSecurityGroup'
-      IpProtocol: tcp
-      ToPort: 5499
-    Type: AWS::EC2::SecurityGroupEgress
-  DBPortRangeAccess:
-    Properties:
-      CidrIp: '0.0.0.0/0'
-      Description: allows database access on tcp ports 54xx
-      FromPort: 5400
-      GroupId: !Ref 'DBSecurityGroup'
-      IpProtocol: tcp
-      ToPort: 5499
-    Type: AWS::EC2::SecurityGroupIngress
-  DBSecurityGroup:
-    Properties:
-      GroupDescription: allows database access on a port range
-      GroupName: DBSecurityGroup
-      Tags:
-        - Key: Name
-          Value: DBSecurityGroup
-        - Key: env
-          Value: prod
-        - Key: project
-          Value: cgap
-        - Key: owner
-          Value: project
-      VpcId: !Ref 'VPC'
-    Type: AWS::EC2::SecurityGroup
   SentieonLicenseSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
